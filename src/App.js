@@ -32,9 +32,12 @@ function App() {
   }
 
   const fetchTransactions = () => {
-    console.log('Starting transactions websocket 🔌')
+    console.log(
+      'Starting transactions websocket 🔌',
+      process.env.REACT_APP_ALCHEMY_WS_URL
+    )
     const provider = new ethers.providers.WebSocketProvider(
-      'wss://eth-mainnet.alchemyapi.io/v2/GEivazmsQf65urxDBQ0DRUR1buP1b6fR'
+      process.env.REACT_APP_ALCHEMY_WS_URL
     )
 
     provider.on('pending', async (tx) => {
