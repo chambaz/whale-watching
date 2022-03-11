@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
+import { TailSpin } from 'react-loader-spinner'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
 
@@ -128,7 +129,15 @@ function App() {
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
                 {!whaleTransactions.length && (
-                  <p className="text-center">shhh, wait for the whales 🎣</p>
+                  <div className="flex flex-col items-center text-center">
+                    <p>shhh, wait for the whales...</p>
+                    <TailSpin
+                      heigth="40"
+                      width="40"
+                      color="#8b5cf6"
+                      ariaLabel="loading"
+                    />
+                  </div>
                 )}
                 {whaleTransactions.length > 0 && (
                   <table className="divide-y divide-gray-300">
