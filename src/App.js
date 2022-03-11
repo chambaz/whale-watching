@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
+import { TailSpin } from 'react-loader-spinner'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
 
@@ -32,9 +33,12 @@ function App() {
   }
 
   const fetchTransactions = () => {
-    console.log('Starting transactions websocket 🔌')
+    console.log(
+      'Starting transactions websocket 🔌',
+      process.env.REACT_APP_ALCHEMY_WS_URL
+    )
     const provider = new ethers.providers.WebSocketProvider(
-      'wss://eth-mainnet.alchemyapi.io/v2/GEivazmsQf65urxDBQ0DRUR1buP1b6fR'
+      process.env.REACT_APP_ALCHEMY_WS_URL
     )
 
     provider.on('pending', async (tx) => {
@@ -93,8 +97,13 @@ function App() {
 
   return (
     <>
-      <main className="w-screen h-screen flex flex-col items-center bg-gray-900 text-gray-50 pt-16 md:pt-32 pb-16 px-4 overflow-auto">
-        <header className="text-center space-y-6">
+      <main className="w-screen h-screen flex flex-col items-center bg-gray-900 text-gray-50 pb-16 overflow-auto">
+        <a
+          href="https://www.chambaz.tech/"
+          className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 py-2 text-center font-bold">
+          Built by <span className="border-b-2">chambaz.eth</span>
+        </a>
+        <header className="text-center space-y-6 pt-16 md:pt-32 px-4">
           <p className="text-8xl">🐳</p>
           <h1 className="text-6xl font-extrabold">Whale Watching</h1>
         </header>
@@ -120,7 +129,15 @@ function App() {
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
                 {!whaleTransactions.length && (
-                  <p className="text-center">shhh, wait for the whales 🎣</p>
+                  <div className="flex flex-col items-center text-center">
+                    <p>shhh, wait for the whales...</p>
+                    <TailSpin
+                      heigth="40"
+                      width="40"
+                      color="#8b5cf6"
+                      ariaLabel="loading"
+                    />
+                  </div>
                 )}
                 {whaleTransactions.length > 0 && (
                   <table className="divide-y divide-gray-300">
