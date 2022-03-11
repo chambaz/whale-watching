@@ -96,8 +96,13 @@ function App() {
 
   return (
     <>
-      <main className="w-screen h-screen flex flex-col items-center bg-gray-900 text-gray-50 pt-16 md:pt-32 pb-16 px-4 overflow-auto">
-        <header className="text-center space-y-6">
+      <main className="w-screen h-screen flex flex-col items-center bg-gray-900 text-gray-50 pb-16 overflow-auto">
+        <a
+          href="https://www.chambaz.tech/"
+          className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 py-2 text-center font-bold">
+          Built by <span className="border-b-2">chambaz.eth</span>
+        </a>
+        <header className="text-center space-y-6 pt-16 md:pt-32 px-4">
           <p className="text-8xl">🐳</p>
           <h1 className="text-6xl font-extrabold">Whale Watching</h1>
         </header>
