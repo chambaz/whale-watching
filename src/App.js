@@ -103,11 +103,11 @@ function App() {
           className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 py-2 text-center font-bold">
           Built by <span className="border-b-2">chambaz.eth</span>
         </a>
-        <header className="text-center space-y-6 pt-16 md:pt-32 px-4">
+        <header className="text-center space-y-6 pt-12 md:pt-32 px-4">
           <p className="text-8xl">🐳</p>
           <h1 className="text-6xl font-extrabold">Whale Watching</h1>
         </header>
-        <div className="flex flex-col max-w-2xl w-full mx-auto mt-16 px-2">
+        <div className="flex flex-col max-w-2xl w-full mx-auto mt-12 md:mt-16 px-10 md:px-2">
           <label htmlFor="minValue" className="form-label mb-2">
             <strong>Minimum Value:</strong> {whaleLimit} ETH (
             {ethToUsd(whaleLimit, true)})
@@ -124,7 +124,7 @@ function App() {
           />
         </div>
 
-        <div className="mt-20 mx-4 flex flex-col">
+        <div className="mt-14 md:mt-20 mx-4 flex flex-col">
           <div className="-my-2 -mx-4">
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
