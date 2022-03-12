@@ -107,7 +107,7 @@ function App() {
           <p className="text-8xl">🐳</p>
           <h1 className="text-6xl font-extrabold">Whale Watching</h1>
         </header>
-        <div className="flex flex-col max-w-2xl w-full mx-auto mt-16 px-2">
+        <div className="flex flex-col max-w-2xl w-full mx-auto mt-16 px-10 md:px-2">
           <label htmlFor="minValue" className="form-label mb-2">
             <strong>Minimum Value:</strong> {whaleLimit} ETH (
             {ethToUsd(whaleLimit, true)})
