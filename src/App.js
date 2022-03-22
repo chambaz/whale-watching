@@ -10,6 +10,7 @@ function App() {
   const startingWhaleLimit = 10
   const [whaleLimit, setWhaleLimit] = useState(startingWhaleLimit)
   const [ethPrice, setEthPrice] = useState(0)
+  const [currentBlock, setCurrentBlock] = useState(0)
   const [transactions, setTransactions] = useState([])
   const [whaleTransactions, setWhaleTransactions] = useState([])
   const timeAgo = new TimeAgo('en-US')
@@ -32,17 +33,37 @@ function App() {
     }).format(eth * ethPrice)
   }
 
-  const fetchTransactions = () => {
+  const fetchTransactions = async () => {
     console.log(
-      'Starting transactions websocket 🔌',
+      'Starting provider websocket 🔌',
       process.env.REACT_APP_ALCHEMY_WS_URL
     )
+
     const provider = new ethers.providers.WebSocketProvider(
       process.env.REACT_APP_ALCHEMY_WS_URL
     )
 
-    provider.on('pending', async (tx) => {
-      const transaction = await provider.getTransaction(tx)
+    const filter = {
+      topics: [ethers.utils.id('Transfer(address,address,uint256)')],
+    }
+
+    const txHashes = []
+
+    const initialBlock = await provider.getBlock()
+
+    console.log('Current block 🧱', initialBlock.number)
+    setCurrentBlock(initialBlock.number)
+
+    fetchEthPrice()
+
+    provider.on('block', (blockNumber) => {
+      console.log('New block 🧱', blockNumber)
+      fetchEthPrice()
+      setCurrentBlock(blockNumber)
+    })
+
+    provider.on(filter, async (log, event) => {
+      const transaction = await provider.getTransaction(log.transactionHash)
 
       if (!transaction) {
         return
@@ -54,18 +75,22 @@ function App() {
         transaction.date = new Date()
         transaction.formattedValue = Math.round(val * 100) / 100
 
+        if (txHashes.indexOf(transaction.hash) > -1) {
+          return
+        }
+
         setTransactions((transactions) => {
           const txs = [...transactions, transaction]
           txs.sort((a, b) => (a.formattedValue < b.formattedValue ? 1 : -1))
           return txs
         })
+
+        txHashes.push(transaction.hash)
       }
     })
   }
 
   const fetchEthPrice = async () => {
-    console.log('Fetching eth price ⏳')
-    setTimeout(fetchEthPrice, 10000)
     return new Promise(async (resolve) => {
       const res = await fetch(
         'https://data.messari.io/api/v1/assets/eth/metrics'
@@ -73,16 +98,11 @@ function App() {
       const json = await res.json()
 
       if (json.data.market_data.price_usd) {
-        console.log('Setting eth price 📈', json.data.market_data.price_usd)
+        console.log('Fetching eth price 📈', json.data.market_data.price_usd)
         setEthPrice(json.data.market_data.price_usd)
         resolve()
       }
     })
-  }
-
-  const init = async () => {
-    await fetchEthPrice()
-    fetchTransactions()
   }
 
   useEffect(() => {
@@ -93,7 +113,7 @@ function App() {
     )
   }, [whaleLimit, transactions])
 
-  useEffect(init, [])
+  useEffect(fetchTransactions, [])
 
   return (
     <>
@@ -125,21 +145,27 @@ function App() {
         </div>
 
         <div className="mt-14 md:mt-20 mx-4 flex flex-col">
-          <div className="-my-2 -mx-4">
-            <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-              <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
-                {!whaleTransactions.length && (
-                  <div className="flex flex-col items-center text-center">
-                    <p>shhh, wait for the whales...</p>
-                    <TailSpin
-                      heigth="40"
-                      width="40"
-                      color="#8b5cf6"
-                      ariaLabel="loading"
-                    />
-                  </div>
-                )}
-                {whaleTransactions.length > 0 && (
+          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+            {!whaleTransactions.length && (
+              <div className="flex flex-col items-center text-center">
+                <p>shhh, wait for whales on the next block...</p>
+                <p className="text-xs italic mt-2 mb-4">
+                  <strong>Current Block</strong>: {currentBlock}
+                </p>
+                <TailSpin
+                  heigth="40"
+                  width="40"
+                  color="#8b5cf6"
+                  ariaLabel="loading"
+                />
+              </div>
+            )}
+            {whaleTransactions.length > 0 && (
+              <>
+                <p className="text-xs mb-2">
+                  <strong>Current Block</strong>: {currentBlock}
+                </p>
+                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
                   <table className="divide-y divide-gray-300">
                     <thead className="bg-gray-50">
                       <tr>
@@ -204,9 +230,9 @@ function App() {
                       })}
                     </tbody>
                   </table>
-                )}
-              </div>
-            </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </main>
