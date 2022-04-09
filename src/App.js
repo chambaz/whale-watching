@@ -7,8 +7,8 @@ import en from 'javascript-time-ago/locale/en.json'
 TimeAgo.addDefaultLocale(en)
 
 function App() {
-  const startingWhaleLimit = 10
-  const [whaleLimit, setWhaleLimit] = useState(startingWhaleLimit)
+  const startingWhaleLimit = 1
+  const [whaleLimit, setWhaleLimit] = useState(10)
   const [ethPrice, setEthPrice] = useState(0)
   const [currentBlock, setCurrentBlock] = useState(0)
   const [transactions, setTransactions] = useState([])
@@ -141,7 +141,7 @@ function App() {
           <input
             type="range"
             className="form-range before:appearance-none before:w-full before:h-6 before:p-0 before:bg-transparent before:focus:outline-none focus:ring-0 focus:shadow-none"
-            min="10"
+            min="1"
             max="4000"
             step="10"
             id="minValue"
