@@ -7,12 +7,14 @@ import en from 'javascript-time-ago/locale/en.json'
 TimeAgo.addDefaultLocale(en)
 
 function App() {
-  const startingWhaleLimit = 1
   const [whaleLimit, setWhaleLimit] = useState(10)
   const [ethPrice, setEthPrice] = useState(0)
   const [currentBlock, setCurrentBlock] = useState(0)
   const [transactions, setTransactions] = useState([])
   const [whaleTransactions, setWhaleTransactions] = useState([])
+  const [loadingMessage, setLoadingMessage] = useState(
+    'shhh, wait for whales on the next block...'
+  )
   const timeAgo = new TimeAgo('en-US')
 
   const truncate = (str, dynamic = true) => {
@@ -71,7 +73,7 @@ function App() {
 
       const val = Number(ethers.utils.formatUnits(transaction.value))
 
-      if (Math.round(val) >= startingWhaleLimit) {
+      if (Math.round(val) >= 0.1) {
         transaction.date = new Date()
         transaction.formattedValue = Math.round(val * 100) / 100
 
@@ -113,7 +115,14 @@ function App() {
     )
   }, [whaleLimit, transactions])
 
-  useEffect(fetchTransactions, [])
+  useEffect(() => {
+    fetchTransactions()
+    setTimeout(() => {
+      setLoadingMessage(
+        'No transactions yet, try reducing the minimum transaction value above 👆'
+      )
+    }, 10000)
+  }, [])
 
   return (
     <>
@@ -141,9 +150,9 @@ function App() {
           <input
             type="range"
             className="form-range before:appearance-none before:w-full before:h-6 before:p-0 before:bg-transparent before:focus:outline-none focus:ring-0 focus:shadow-none"
-            min="1"
-            max="4000"
-            step="10"
+            min="0"
+            max="1000"
+            step="1"
             id="minValue"
             value={whaleLimit}
             onChange={(e) => setWhaleLimit(Number(e.target.value))}
@@ -154,7 +163,7 @@ function App() {
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             {!whaleTransactions.length && (
               <div className="flex flex-col items-center text-center">
-                <p>shhh, wait for whales on the next block...</p>
+                <p>{loadingMessage}</p>
                 <p className="mt-2 mb-4 text-xs italic">
                   <strong>Current Block</strong>: {currentBlock}
                 </p>
