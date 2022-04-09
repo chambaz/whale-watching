@@ -117,18 +117,24 @@ function App() {
 
   return (
     <>
-      <main className="w-screen h-screen flex flex-col items-center bg-gray-900 text-gray-50 pb-16 overflow-auto">
-        <a
-          href="https://www.chambaz.tech/"
-          className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 py-2 text-center font-bold">
-          Built by <span className="border-b-2">chambaz.eth</span>
-        </a>
-        <header className="text-center space-y-6 pt-12 md:pt-32 px-4">
+      <main className="flex flex-col items-center w-screen h-screen pb-16 overflow-auto bg-gray-900 text-gray-50">
+        <div className="w-full py-2 font-bold text-center bg-gradient-to-r from-violet-500 to-fuchsia-500">
+          Built by{' '}
+          <a href="https://www.chambaz.tech/" className="border-b-2">
+            chambaz.eth
+          </a>
+          , say{' '}
+          <a href="https://twitter.com/chambaz" className="border-b-2">
+            hello 👋
+          </a>
+          .
+        </div>
+        <header className="px-4 pt-12 space-y-6 text-center md:pt-32">
           <p className="text-8xl">🐳</p>
           <h1 className="text-6xl font-extrabold">Whale Watching</h1>
         </header>
-        <div className="flex flex-col max-w-2xl w-full mx-auto mt-12 md:mt-16 px-10 md:px-2">
-          <label htmlFor="minValue" className="form-label mb-2">
+        <div className="flex flex-col w-full max-w-2xl px-10 mx-auto mt-12 md:mt-16 md:px-2">
+          <label htmlFor="minValue" className="mb-2 form-label">
             <strong>Minimum Value:</strong> {whaleLimit} ETH (
             {ethToUsd(whaleLimit, true)})
           </label>
@@ -144,12 +150,12 @@ function App() {
           />
         </div>
 
-        <div className="mt-14 md:mt-20 mx-4 flex flex-col">
+        <div className="flex flex-col mx-4 mt-14 md:mt-20">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             {!whaleTransactions.length && (
               <div className="flex flex-col items-center text-center">
                 <p>shhh, wait for whales on the next block...</p>
-                <p className="text-xs italic mt-2 mb-4">
+                <p className="mt-2 mb-4 text-xs italic">
                   <strong>Current Block</strong>: {currentBlock}
                 </p>
                 <TailSpin
@@ -162,10 +168,10 @@ function App() {
             )}
             {whaleTransactions.length > 0 && (
               <>
-                <p className="text-xs mb-2">
+                <p className="mb-2 text-xs">
                   <strong>Current Block</strong>: {currentBlock}
                 </p>
-                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
+                <div className="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5">
                   <table className="divide-y divide-gray-300">
                     <thead className="bg-gray-50">
                       <tr>
@@ -194,7 +200,7 @@ function App() {
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 bg-white">
+                    <tbody className="bg-white divide-y divide-gray-200">
                       {transactions.map((tx, index) => {
                         if (tx.formattedValue < whaleLimit) {
                           return
@@ -209,19 +215,19 @@ function App() {
                             onClick={() => {
                               window.open(`https://etherscan.io/tx/${tx.hash}`)
                             }}>
-                            <td className="whitespace-nowrap px-3 py-4 text-xs sm:pl-8">
+                            <td className="px-3 py-4 text-xs whitespace-nowrap sm:pl-8">
                               {timeAgo.format(tx.date, 'mini')} ago
                             </td>
-                            <td className="hidden sm:table-cell whitespace-nowrap px-3 py-4 text-sm text-cyan-700 font-bold">
+                            <td className="hidden px-3 py-4 text-sm font-bold sm:table-cell whitespace-nowrap text-cyan-700">
                               {truncate(tx.hash, false)}
                             </td>
-                            <td className="whitespace-nowrap px-3 py-4 text-sm">
+                            <td className="px-3 py-4 text-sm whitespace-nowrap">
                               {truncate(tx.from)}
                             </td>
-                            <td className="whitespace-nowrap px-3 py-4 text-sm">
+                            <td className="px-3 py-4 text-sm whitespace-nowrap">
                               {truncate(tx.to)}
                             </td>
-                            <td className="whitespace-nowrap px-3 py-4 text-sm font-bold sm:pr-12">
+                            <td className="px-3 py-4 text-sm font-bold whitespace-nowrap sm:pr-12">
                               {tx.formattedValue}Ξ
                               {` (${ethToUsd(tx.formattedValue)})`}
                             </td>
